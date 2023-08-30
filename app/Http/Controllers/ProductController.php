@@ -31,6 +31,7 @@ class ProductController extends Controller
     //新規追加処理
     //ファイル保存
     public function create(ProductCreateRequest $request){
+
         \Log::debug('[ProductController][create]');
         $product_name = $request->input("product_name");
         $price = $request->input("price");
@@ -40,20 +41,18 @@ class ProductController extends Controller
 
         $uploadedfile = $request->file('file');
 
+        if($uploadedfile){
+            $filename = $uploadedfile->getClientOriginalName();
+        } else{
+            $filename = "";
+        }
+
         $validated = $request->validated();
         $product_name = $validated['product_name'];
         $price = $validated['price'];
         $stock = $validated['stock'];
         $comment = $validated['comment'];
         $company_name = $validated['company_name'];
-
-        if($uploadedfile){
-            $filename = $uploadedfile->getClientOriginalName();
-            /* $filename = $validated['file']; */
-            $uploadedfile->storeAs('',$product->id);
-        }else{
-            $filename = "";
-        }
 
         \Log::debug('[ProductController][create] input =>',[$product_name,$price,$stock,$comment,$company_name,$filename]);
 
@@ -65,6 +64,14 @@ class ProductController extends Controller
             "company_name"=>$company_name,
             'filename'=>$filename,
         ]);
+
+        if($uploadedfile){
+            $filename = $uploadedfile->getClientOriginalName();
+            /* $filename = $validated['file']; */
+            $uploadedfile->storeAs('',$product->id);
+        }else{
+            $filename = "";
+        }
 
         return redirect()->route("product.index");
     }
