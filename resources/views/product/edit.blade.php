@@ -61,7 +61,11 @@
                 <div class="d-flex mb-2 mt-3" style="height:50px;">
                     <p style="width:100px;">メーカー:</p>
                     <div style="width:300px;">
-                        <input type="text" name="company_name" value="{{$product->company_name}}"><br>
+                    <select name="company_id">
+                        @foreach($companies as $company)
+                        <option value="{{$company->id}}">{{$company->company_name}}</option>
+                        @endforeach
+                    </select>
                         @if($errors->has('company_name'))
                         <li style="color:red; list-style:none;">{{$errors->first('company_name')}}</li>
                         @endif

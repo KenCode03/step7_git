@@ -42,7 +42,12 @@
             <form class="row justify-content-md-center" method="GET" action="{{ route('product.index') }}">
             @csrf
                 <!-- <input type="text" name="keywords" placeholder="検索キーワード" class="col col-lg-2"> --> <!-- まだ -->
-                <input type="text" name="company_name" placeholder="メーカー名" class="col col-lg-2 ms-3">
+                <select class="col col-lg-2 ms-3" name="company_id">
+                        @foreach($companies as $company)
+                        <option class="col col-lg-2 ms-3" value="{{$company->id}}">{{$company->company_name}}</option>
+                        @endforeach
+                </select>
+                <!-- <input type="text" name="company_name" placeholder="メーカー名" class="col col-lg-2 ms-3"> -->
                 <input type="submit" value="検索" class="col col-lg-1 ms-3">
             </form>
         </div>
@@ -71,7 +76,7 @@
                         <div class="col col-lg-2 mb-2 mt-2">{{$product->product_name}}</div>
                         <div class="col col-lg-2 mb-2 mt-2">{{$product->price}}</div>
                         <div class="col col-lg-1 mb-2 mt-2">{{$product->stock}}</div>
-                        <div class="col col-lg-2 mb-2 mt-2">{{$product->company_name}}</div>
+                        <div class="col col-lg-2 mb-2 mt-2">{{$product->company->company_name}}</div>
                         <!-- <div class="col col-lg-1">{{$product->comment}}</div> -->
 
                         <div class="col col-lg-2 d-grid gap-2 d-md-block">

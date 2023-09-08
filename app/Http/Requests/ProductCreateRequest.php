@@ -28,7 +28,7 @@ class ProductCreateRequest extends FormRequest
             'price'=>'required|integer',
             'stock'=>'required|integer',
             'comment'=>'required|max:30',
-            'company_name'=>'required|max:10',
+            /* 'company_name'=>'required|max:10', */
             /* 'file'=>'required|image', */
         ];
     }
@@ -42,8 +42,8 @@ class ProductCreateRequest extends FormRequest
             'stock.integer'=>'数字で入力して下さい',
             'comment.required'=>'コメントを入力して下さい',
             'comment.max'=>'コメントは30文字以内で入力して下さい',
-            'company_name.required'=>'会社名を入力して下さい',
-            'company_name.max'=>'会社名は10文字以内で入力して下さい',
+            /* 'company_name.required'=>'会社名を入力して下さい',
+            'company_name.max'=>'会社名は10文字以内で入力して下さい', */
             /* 'file.required'=>'写真を選択して下さい' */
         ];
     }

@@ -80,7 +80,14 @@
 
                 <div class="d-flex mb-3" style="height:30px;">
                     <p style="width:100px;">会社名:</p>
-                    <input style="width:300px;" type="text" name="company_name"><br>
+                    <!-- <input style="width:300px;" type="text" name="company_name"><br> -->
+                    <!-- <input style="width:300px;" type="text" name="company_id"><br> -->
+                    <select name="company_id">
+                        @foreach($companies as $company)
+                        <option value="{{$company->id}}">{{$company->company_name}}</option>
+                        @endforeach
+                    </select>
+
                 </div>
                 @if($errors->has('company_name'))
                     <li style="color:red;">{{$errors->first('company_name')}}</li>

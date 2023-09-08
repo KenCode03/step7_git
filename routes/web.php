@@ -38,22 +38,22 @@ require __DIR__.'/auth.php';
 route::get('/product/',[ProductController::class,'index'])->name('product.index');
 
 //新規作成ページ
-route::get('/product/new',[ProductController::class,'new'])->name('product.new');
+route::get('/product/new',[ProductController::class,'new'])->name('product.new')->middleware('auth');
 
 //新規追加処理
-route::post('/product/create',[ProductController::class,'create'])->name('product.create');
+route::post('/product/create',[ProductController::class,'create'])->name('product.create')->middleware('auth');
 
 //詳細ページ
 route::get('/product/show/{id}',[ProductController::class,'show'])->name('product.show');
 
 //編集ページ
-route::get('/product/edit/{id}',[ProductController::class,'edit'])->name('product.edit');
+route::get('/product/edit/{id}',[ProductController::class,'edit'])->name('product.edit')->middleware('auth');
 
 //既存データ編集処理
-Route::post('/product/update', [ProductController::class, 'update'])->name('product.update');
+Route::post('/product/update', [ProductController::class, 'update'])->name('product.update')->middleware('auth');
 
 //削除処理
-route::post('/product/delate', [ProductController::class,'delete'])->name('product.delete');
+route::post('/product/delate', [ProductController::class,'delete'])->name('product.delete')->middleware('auth');
 
 //ファイル取得
-route::get('/product/getfile/{id}',[ProductController::class,'getfile'])->name('product.getfile');
+route::get('/product/getfile/{id}',[ProductController::class,'getfile'])->name('product.getfile')->middleware('auth');

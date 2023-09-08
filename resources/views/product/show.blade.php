@@ -56,7 +56,7 @@
                         </div>
                         <div class="d-flex mb-3 mt-3" style="height:30px;">
                             <p style="width:100px;">メーカー:</p>
-                            <div style="width:300px;">{{$product->company_name}}</div>
+                            <div style="width:300px;">{{$product->company->company_name}}</div>
                         </div>
                         <div class="d-flex mb-3 mt-3" style="height:30px;">
                             <p style="width:100px;">価格:</p>
