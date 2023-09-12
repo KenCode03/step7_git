@@ -36,7 +36,6 @@
             </div>
         </nav>
 
-        <!-- <h1>詳細ページ</h1> -->
         <div class="m-auto" style="width:400px;">
             <h3>詳細画面</h3>
             <div>

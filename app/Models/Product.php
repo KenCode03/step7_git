@@ -15,7 +15,6 @@ class Product extends Model
         "product_id",
         "company_id",
         "product_name",
-        /* "company_name", */
         "price",
         "stock",
         "comment",

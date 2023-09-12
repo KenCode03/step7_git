@@ -36,7 +36,6 @@
             </div>
         </nav>
 
-        <!-- <h1>編集ページ</h1> -->
         <div class="m-auto" style="width:400px;">
             <h3>詳細画面</h3>
             <form class="border border-dark p-3" action="{{route('product.update')}}" method="post" enctype="multipart/form-data">

@@ -41,13 +41,12 @@
         <div class="container">
             <form class="row justify-content-md-center" method="GET" action="{{ route('product.index') }}">
             @csrf
-                <!-- <input type="text" name="keywords" placeholder="検索キーワード" class="col col-lg-2"> --> <!-- まだ -->
+                <input type="text" name="product_name" placeholder="商品名" class="col col-lg-2">
                 <select class="col col-lg-2 ms-3" name="company_id">
                         @foreach($companies as $company)
                         <option class="col col-lg-2 ms-3" value="{{$company->id}}">{{$company->company_name}}</option>
                         @endforeach
                 </select>
-                <!-- <input type="text" name="company_name" placeholder="メーカー名" class="col col-lg-2 ms-3"> -->
                 <input type="submit" value="検索" class="col col-lg-1 ms-3">
             </form>
         </div>
@@ -77,7 +76,6 @@
                         <div class="col col-lg-2 mb-2 mt-2">{{$product->price}}</div>
                         <div class="col col-lg-1 mb-2 mt-2">{{$product->stock}}</div>
                         <div class="col col-lg-2 mb-2 mt-2">{{$product->company->company_name}}</div>
-                        <!-- <div class="col col-lg-1">{{$product->comment}}</div> -->
 
                         <div class="col col-lg-2 d-grid gap-2 d-md-block">
                             <a class="btn btn-warning mt-3 ps-4 pe-4" href="{{route('product.show',['id'=>$product->id])}}">詳細</a>
@@ -95,8 +93,6 @@
         </div>
         <!-- ページネーション -->
         {{ $products->links('vendor.pagination.bootstrap-4') }}
-    <!--     <hr>
-        <a href="{{route('product.new')}}">新規追加</a> -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
     </body>
 </html>

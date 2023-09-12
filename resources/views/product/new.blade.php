@@ -35,7 +35,6 @@
                 </div>
             </div>
         </nav>
-        <!-- <h1>新規作成</h1> -->
         <div class="m-auto w-25">
             <h3>新規登録画面</h3>
             <form class="border border-dark p-3" action="{{route('product.create')}}" method="post" enctype="multipart/form-data">
@@ -80,8 +79,6 @@
 
                 <div class="d-flex mb-3" style="height:30px;">
                     <p style="width:100px;">会社名:</p>
-                    <!-- <input style="width:300px;" type="text" name="company_name"><br> -->
-                    <!-- <input style="width:300px;" type="text" name="company_id"><br> -->
                     <select name="company_id">
                         @foreach($companies as $company)
                         <option value="{{$company->id}}">{{$company->company_name}}</option>
