@@ -41,70 +41,39 @@ class ProductController extends Controller
 
     //新規追加処理
     //ファイル保存
-    public function create(ProductCreateRequest $request){
+    public function create(ProductCreateRequest $request)
+{
+    \Log::debug('[ProductController][create]');
 
-        \Log::debug('[ProductController][create]');
+    // トランザクション開始
+    DB::beginTransaction();
 
-        //トランザクション開始
-        DB::beginTransaction();
+    try {
+        // フォームからデータ取得
+        $productData = $request->only(['product_name', 'price', 'stock', 'comment', 'company_id']);
+        $uploadedFile = $request->file('file');
 
-        try{
-            //フォームからデータ取得
-            $product_name = $request->input("product_name");
-            $price = $request->input("price");
-            $stock = $request->input("stock");
-            $comment = $request->input("comment");
-            $company_id = $request->input ('company_id');
+        // ファイルをアップロード
+        $filename = $uploadedFile ? $uploadedFile->getClientOriginalName() : '';
 
-            $uploadedfile = $request->file('file');
+        // データのバリデーション
+        $validatedData = $request->validated();
 
-            if($uploadedfile){
-                $filename = $uploadedfile->getClientOriginalName();
-            } else{
-                $filename = "";
-            }
+        // モデルを使用して商品を作成
+        $product = Product::createProduct(array_merge($productData, ['filename' => $filename]));
 
-            //データのバリデーション
-            $validated = $request->validated();
-            $product_name = $validated['product_name'];
-            $price = $validated['price'];
-            $stock = $validated['stock'];
-            $comment = $validated['comment'];
+        // トランザクションをコミット
+        DB::commit();
+    } catch (\Exception $e) {
+        // エラーが発生した場合、トランザクションをロールバック
+        DB::rollback();
 
-            \Log::debug('[ProductController][create] input =>',[$product_name,$price,$stock,$comment,$company_id,$filename]);
-
-            //商品をデータベースに作成
-            /* $product = Product::create([
-                "product_name"=>$product_name,
-                "price"=>$price,
-                "stock"=>$stock,
-                "comment"=>$comment,
-                "company_id"=>$company_id,
-                'filename'=>$filename,
-            ]); */
-            $product = Product::create($data);
-
-            //ファイルをアップロード
-            if($uploadedfile){
-                $filename = $uploadedfile->getClientOriginalName();
-                $uploadedfile->storeAs('',$product->id);
-            }else{
-                $filename = "";
-            }
-
-            //トランザクションをコミット
-            DB::commit();
-        } catch(\Exception $e) {
-            //エラーが発生した場合、トランザクションをロールバック
-            DB::rollback();
-
-
-            //エラーハンドリングを行う
-            return redirect()->back()->with('error','商品の作成中にエラーが発生しました。');
-        }
-
-        return redirect()->route("product.new");
+        // エラーハンドリングを行う
+        return redirect()->back()->with('error', '商品の作成中にエラーが発生しました。');
     }
+
+    return redirect()->route("product.new");
+}
 
     //詳細ページ
     public function show(Request $request,$id){
@@ -130,52 +99,39 @@ class ProductController extends Controller
     }
 
     //既存データ編集処理
-    public function update(ProductCreateRequest $request){
-        \Log::debug('[ProductController][update]');
-        $id = $request->input('id');
-        $product_name = $request->input('product_name');
-        $price = $request->input('price');
-        $stock = $request->input('stock');
-        $comment = $request->input("comment");
-        $company_id = $request->input('company_id');
+    public function update(ProductCreateRequest $request)
+    {
+    \Log::debug('[ProductController][update]');
+    $id = $request->input('id');
+    $data = [
+        'product_name' => $request->input('product_name'),
+        'price' => $request->input('price'),
+        'stock' => $request->input('stock'),
+        'comment' => $request->input('comment'),
+        'company_id' => $request->input('company_id'),
+    ];
+    $uploadedFile = $request->file('file');
 
-        $uploadedfile = $request->file('file');
+    DB::beginTransaction();
+    try {
+        $validated = $request->validated();
 
-        DB::beginTransaction();
-        try{
-            $validated = $request->validated();
-            $product_name = $validated['product_name'];
-            $price = $validated['price'];
-            $stock = $validated['stock'];
+        $product = Product::find($id);
+        $product->updateProduct($data);
 
-            \Log::debug('[ProductController][update] inputs => ',[$id,$product_name,$price,$stock,$comment/* ,$company_name */]);
-            $product = Product::find($id);
-            $product->product_name = $product_name;
-            $product->price = $price;
-            $product->stock = $stock;
-            $product->comment = $comment;
-            $product->company_id = $company_id;
-
-
-            if ($uploadedfile){
-                $filename = $uploadedfile->getClientOriginalName();
-
-                $product->filename = $filename;
-
-                $uploadedfile->storeAs('',$product->id);
-            };
-
-            $product->save();
-
-            DB::commit();
-        } catch (\Exception $e) {
-
-            DB::rollback();
-
-            return redirect()->back()->with('error', '商品の更新中にエラーが発生しました。');
+        if ($uploadedFile) {
+            $filename = $uploadedFile->getClientOriginalName();
+            $product->update(['filename' => $filename]);
+            $uploadedFile->storeAs('', $id);
         }
 
-        return redirect()->route('product.edit',['id'=>$id]);
+        DB::commit();
+    } catch (\Exception $e) {
+        DB::rollback();
+        return redirect()->back()->with('error', '商品の更新中にエラーが発生しました。');
+    }
+
+    return redirect()->route('product.edit', ['id' => $id]);
     }
 
     //削除処理
@@ -187,17 +143,14 @@ class ProductController extends Controller
         DB::beginTransaction();
 
         try{
-            $product = Product::find($id);
-            $product->delete();
-
+            $result = Product::deleteProduct($id);
+            /* $product = Product::find($id);
+            $product->delete(); */
             DB::commit();
         } catch (\Exception $e){
-
             DB::rollback();
-
             return redirect()->back()->with('error', '商品の削除中にエラーが発生しました。');
         }
-
         return redirect()->route('product.index');
     }
 
