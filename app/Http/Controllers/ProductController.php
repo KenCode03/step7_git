@@ -74,14 +74,15 @@ class ProductController extends Controller
             \Log::debug('[ProductController][create] input =>',[$product_name,$price,$stock,$comment,$company_id,$filename]);
 
             //商品をデータベースに作成
-            $product = Product::create([
+            /* $product = Product::create([
                 "product_name"=>$product_name,
                 "price"=>$price,
                 "stock"=>$stock,
                 "comment"=>$comment,
                 "company_id"=>$company_id,
                 'filename'=>$filename,
-            ]);
+            ]); */
+            $product = Product::create($data);
 
             //ファイルをアップロード
             if($uploadedfile){
