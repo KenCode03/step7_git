@@ -42,7 +42,7 @@ class ProductController extends Controller
     //新規追加処理
     //ファイル保存
     public function create(ProductCreateRequest $request)
-{
+    {
     \Log::debug('[ProductController][create]');
 
     // トランザクション開始
@@ -51,16 +51,23 @@ class ProductController extends Controller
     try {
         // フォームからデータ取得
         $productData = $request->only(['product_name', 'price', 'stock', 'comment', 'company_id']);
-        $uploadedFile = $request->file('file');
+        $uploadedfile = $request->file('file');
 
         // ファイルをアップロード
-        $filename = $uploadedFile ? $uploadedFile->getClientOriginalName() : '';
+        $filename = $uploadedfile->getClientOriginalName();
 
         // データのバリデーション
         $validatedData = $request->validated();
 
         // モデルを使用して商品を作成
         $product = Product::createProduct(array_merge($productData, ['filename' => $filename]));
+
+        if($uploadedfile){
+            $filename = $uploadedfile->getClientOriginalName();
+            $uploadedfile->storeAs('',$product->id);
+        }else{
+            $filename = "";
+        }
 
         // トランザクションをコミット
         DB::commit();
@@ -73,7 +80,7 @@ class ProductController extends Controller
     }
 
     return redirect()->route("product.new");
-}
+    }
 
     //詳細ページ
     public function show(Request $request,$id){
