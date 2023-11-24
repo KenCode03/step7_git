@@ -20,6 +20,8 @@ class Product extends Model
         'filename',
     ];
 
+    public $sortable = ['price','stock'];
+
     public function sale(){
         return $this->hasMany(Sale::class);
     }
@@ -40,9 +42,5 @@ class Product extends Model
     return $this->update($data);
     }
 
-    //削除処理
-    public static function deleteProduct($id){
-        return self::where('id',$id)->delete();
-    }
 
 }

@@ -14,4 +14,24 @@
             </div>
         </div>
     </div>
+    <button id='ok_button'>OK</button>
+    <div id='data'>
+        <ul id='products'></ul>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script>
+        $('#ok_button').click(function() {
+            $.getJSON(
+                '/api/product',
+                function(data) {
+                    $('#products').empty();
+                    data.forEach(function(item){
+                        $('#products').append(`<li>${item.id}</li>`)
+                        $('#products').append(`<li>${item.product_name}</li>`)
+                    });
+                    console.log(data);
+                }
+            );
+        });
+    </script>
 </x-app-layout>

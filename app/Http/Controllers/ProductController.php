@@ -18,11 +18,40 @@ class ProductController extends Controller
     public function index(Request $request){
         $companies = Company::all();
 
+        $query = Product::query();
         $product_name = $request->input('product_name');
-
         $company_id = $request->input ('company_id');
+        $price_upper = $request->input('price-upper');
+        $price_lower = $request->input('price-lower');
+        $stock_upper = $request->input('stock-upper');
+        $stock_lower = $request->input('stock-lower');
 
-        $products = Product::where('product_name', 'like', "%$product_name%")->where('company_id', 'like', "%$company_id%")->paginate(2);
+        if(!empty($product_name)){
+            $query->where('product_name', 'like', "%$product_name%");
+        }
+
+        if(!empty($company_id)){
+            $query->where('company_id', 'like', "%$company_id%");
+        }
+
+        if(!empty($price_upper)){
+            $query->where('price', '<=', "$price_upper");
+        }
+
+        if(!empty($price_lower)){
+            $query->where('price', '>=', "$price_lower");
+        }
+
+        if(!empty($stock_upper)){
+            $query->where('stock', '<=', "$stock_upper");
+        }
+
+        if(!empty($stock_lower)){
+            $query->where('stock', '>=', "$stock_lower");
+        }
+
+        $products = $query->paginate(4);
+
 
         return view('product.index',[
             "products"=>$products,
@@ -169,5 +198,25 @@ class ProductController extends Controller
         $mimeType = Storage::mimeType($storedfilename);
         $headers = [['Content-Type' => $mimeType]];
         return storage::response($storedfilename,$filename,$headers);
+    }
+
+    //練習
+    public function apiproduct(Request $request){
+        $products = Product::all();
+        $result = [];
+        foreach($products as $product){
+            $result[] = [
+                'id'=>$product->id,
+                'product_name'=>$product->product_name,
+                'price'=>$product->price,
+            ];
+        }
+        return response()->json($result);
+    }
+
+    //削除非同期
+    public function destroy(Request $request){
+        $id = Product::find($id);
+        $id->delete();
     }
 }

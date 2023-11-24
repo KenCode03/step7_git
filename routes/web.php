@@ -57,3 +57,10 @@ route::post('/product/delate', [ProductController::class,'delete'])->name('produ
 
 //ファイル取得
 route::get('/product/getfile/{id}',[ProductController::class,'getfile'])->name('product.getfile')->middleware('auth');
+
+//練習
+route::get('/api/product',[ProductController::class,'apiproduct'])->middleware('auth');
+
+
+//削除処理(非同期)
+route::delete('/destroy/{id}', [ProductController::class,'destroy']);

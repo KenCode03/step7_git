@@ -212,4 +212,8 @@ return [
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
 
+    /* 'providers' => [
+        Kyslik\ColumnSortable\ColumnSortableServiceProvider::class,
+    ] */
+
 ];
