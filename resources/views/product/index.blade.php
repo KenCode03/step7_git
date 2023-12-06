@@ -121,20 +121,6 @@
 
         <!-- 検索機能 -->
         <div class="container">
-            <!-- <form class="row justify-content-md-center" method="GET" action="{{ route('product.index') }}">
-            @csrf
-                <input type="text" name="product_name" placeholder="商品名" class="col col-lg-1">
-                <select class="col col-lg-1 ms-3" name="company_id">
-                        @foreach($companies as $company)
-                        <option  value="{{$company->id}}">{{$company->company_name}}</option>
-                        @endforeach
-                </select>
-                <input class="col col-lg-1 ms-3"  type="text" name="price-upper" placeholder="価格上限" >
-                <input class="col col-lg-1 ms-3"  type="text" name="price-lower" placeholder="価格下限" >
-                <input class="col col-lg-1 ms-3"  type="text" name="stock-upper" placeholder="在庫上限">
-                <input class="col col-lg-1 ms-3"  type="text" name="stock-lower" placeholder="在庫下限">
-                <input class="col col-lg-1 ms-3"  type="submit" value="検索">
-            </form> -->
             <form class="row justify-content-md-center">
                 <input class="col col-lg-1" type="text" id="product_name" name="product_name" placeholder="商品名">
                 <select class="col col-lg-1 ms-3" id="company_id" name="company_id">
@@ -157,7 +143,6 @@
             <h3 class="title">商品一覧画面</h3>
             <a class="col col-lg-2 btn btn-primary" href="{{route('product.new')}}">新規追加</a>
             <table id="fav-table" class="table table-bordered border">
-            <!-- <div id="table_sort" class="tablesorter container text-center m-0 border-top border-end border-start border-dark"> -->
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -166,7 +151,6 @@
                         <th>価格</th>
                         <th>在庫数</th>
                         <th>メーカー名</th>
-                        <!-- <th><a class="col col-lg-2 btn btn-primary" href="{{route('product.new')}}">新規追加</a></th> -->
                     </tr>
                 </thead>
                 <tbody id='products'>
@@ -191,7 +175,5 @@
         <!-- ページネーション -->
         {{ $products->links('vendor.pagination.bootstrap-4') }}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
-    <!-- jQuery  -->
-    <!-- <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script> -->
     </body>
 </html>

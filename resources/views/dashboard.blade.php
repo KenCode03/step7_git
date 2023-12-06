@@ -14,16 +14,6 @@
             </div>
         </div>
     </div>
-    <!-- <div>
-        <label for="id">ID検索</label>
-        <input type="text" id="id" name="id" value="">
-
-        <label for="product_name">名前</label>
-        <input type="text" id="product_name" name="product_name" value="">
-    </div> -->
-    <!-- <div id='data'>
-        <ul id='products'></ul>
-    </div> -->
     <input type="text" id="id" name="id" value="">
     <button id="searchButton">検索</button>
     <div>
@@ -31,17 +21,6 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script>
-        /* $.getJSON(
-            '/api/index',
-            function(data) {
-                $('#products').empty();
-                data.forEach(function(item){
-                    $('#products').append(`<li>${item.id}</li>`)
-                    $('#products').append(`<li>${item.product_name}</li>`)
-                });
-                console.log(data);
-            }
-        ); */
         //検索
         $(function() {
             $('#searchButton').on('click', function() {
@@ -64,24 +43,5 @@
                 }
             });
         });
-        /* $(function() {
-            $('#id').on('change', function() {
-                var id = $(this).val();
-
-                $.ajax({
-                    url: '/api/search',
-                    type: 'GET',
-                    data: { id: id },
-                    dataType: 'json',
-                }).done(function(data) {
-                    var product_name = data[0] ? data[0].product_name : '';
-
-                    $('#product_name').val(product_name);
-
-                }).fail(function() {
-                    alert('データ取得できませんでした。');
-                });
-            });
-        }); */
     </script>
 </x-app-layout>

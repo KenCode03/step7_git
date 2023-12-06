@@ -171,25 +171,6 @@ class ProductController extends Controller
     return redirect()->route('product.edit', ['id' => $id]);
     }
 
-    //削除処理
-    /* public function delete(Request $request){
-        \Log::debug('[ProductController][delete]');
-        $id = $request->input('id');
-        \Log::debug('[ProductController][delete] input=>',[$id]);
-
-        DB::beginTransaction();
-
-        try{
-            $result = Product::deleteProduct($id); */
-            /* $product = Product::find($id);
-            $product->delete(); */
-            /* DB::commit();
-        } catch (\Exception $e){
-            DB::rollback();
-            return redirect()->back()->with('error', '商品の削除中にエラーが発生しました。');
-        }
-        return redirect()->route('product.index');
-    } */
 
     //ファイル取得
     public function getfile(Request $request , $id){
@@ -215,13 +196,6 @@ class ProductController extends Controller
     }
 
     //検索
-    /* public function apisearch(Request $request){
-        $id = $request->input('id');
-        $result = DB::select("SELECT id, product_name FROM products WHERE id = ?", [$id]);
-        $result = DB::select("SELECT id,product_name,price,stock FROM products WHERE product_name LIKE ?", ['%' . $id . '%']);
-        return response()->json($result);
-    } */
-
     public function apisearch(Request $request){
         $query = Product::query();
         $product_name = $request->input('product_name');
@@ -266,11 +240,6 @@ class ProductController extends Controller
     }
 
     //削除非同期
-    /* public function destroy(Request $request){
-        $id = $request->input('id');
-        $product = Product::find($id);
-        $product->delete();
-    } */
     public function destroy(Request $request,int $id){
         $product = Product::findOrFail($id);
         $product->delete();
