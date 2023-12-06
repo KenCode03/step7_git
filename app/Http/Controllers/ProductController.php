@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Company;
+use App\Models\Sale;
 
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\ProductCreateRequest;
@@ -171,7 +172,7 @@ class ProductController extends Controller
     }
 
     //削除処理
-    public function delete(Request $request){
+    /* public function delete(Request $request){
         \Log::debug('[ProductController][delete]');
         $id = $request->input('id');
         \Log::debug('[ProductController][delete] input=>',[$id]);
@@ -179,16 +180,16 @@ class ProductController extends Controller
         DB::beginTransaction();
 
         try{
-            $result = Product::deleteProduct($id);
+            $result = Product::deleteProduct($id); */
             /* $product = Product::find($id);
             $product->delete(); */
-            DB::commit();
+            /* DB::commit();
         } catch (\Exception $e){
             DB::rollback();
             return redirect()->back()->with('error', '商品の削除中にエラーが発生しました。');
         }
         return redirect()->route('product.index');
-    }
+    } */
 
     //ファイル取得
     public function getfile(Request $request , $id){
@@ -201,22 +202,78 @@ class ProductController extends Controller
     }
 
     //練習
-    public function apiproduct(Request $request){
+    public function apiindex(Request $request){
         $products = Product::all();
         $result = [];
         foreach($products as $product){
             $result[] = [
                 'id'=>$product->id,
                 'product_name'=>$product->product_name,
-                'price'=>$product->price,
             ];
         }
         return response()->json($result);
     }
 
+    //検索
+    /* public function apisearch(Request $request){
+        $id = $request->input('id');
+        $result = DB::select("SELECT id, product_name FROM products WHERE id = ?", [$id]);
+        $result = DB::select("SELECT id,product_name,price,stock FROM products WHERE product_name LIKE ?", ['%' . $id . '%']);
+        return response()->json($result);
+    } */
+
+    public function apisearch(Request $request){
+        $query = Product::query();
+        $product_name = $request->input('product_name');
+        $company_id = $request->input('company_id');
+        $price_upper = $request->input('price_upper');
+        $price_lower = $request->input('price_lower');
+        $stock_upper = $request->input('stock_upper');
+        $stock_lower = $request->input('stock_lower');
+
+        if(!empty($product_name)){
+            $query->where('product_name', 'like', "%$product_name%");
+        }
+
+        if(!empty($company_id)){
+            $query->where('company_id', 'like', "%$company_id%");
+        }
+
+        if(!empty($price_upper)){
+            $query->where('price', '<=', "$price_upper");
+        }
+
+        if(!empty($price_lower)){
+            $query->where('price', '>=', "$price_lower");
+        }
+
+        if(!empty($stock_upper)){
+            $query->where('stock', '<=', "$stock_upper");
+        }
+
+        if(!empty($stock_lower)){
+            $query->where('stock', '>=', "$stock_lower");
+        }
+
+        $products = $query->paginate(4);
+
+        $html = view('product.parts', [
+            "products" => $products,
+        ])->render();
+
+        $html_parts = ['parts' => $html];
+        return response()->json($html_parts);
+    }
+
     //削除非同期
-    public function destroy(Request $request){
-        $id = Product::find($id);
-        $id->delete();
+    /* public function destroy(Request $request){
+        $id = $request->input('id');
+        $product = Product::find($id);
+        $product->delete();
+    } */
+    public function destroy(Request $request,int $id){
+        $product = Product::findOrFail($id);
+        $product->delete();
+        return response()->json(['states'=>'ok']);
     }
 }

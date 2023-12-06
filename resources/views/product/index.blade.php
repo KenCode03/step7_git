@@ -5,39 +5,32 @@
             <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
             <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.0/js/jquery.tablesorter.min.js"></script>
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.0/css/theme.default.min.css">
+            <meta name="csrf-token" content="{{ csrf_token() }}">
             <script>
             $(document).ready(function(){
-                $("#fav-table,#fav-table2").tablesorter({
-                    headers: {
-                        0: { sorter: false },
-                        1: { sorter: false },
-                        2: { sorter: false },
-                        5: { sorter: false }
-                    }
-                });
+                table();
             });
-            /* 削除(非同期) */
+            /* 削除 */
             $(function() {
-                $('#destroy').on('click',function(e){
-                    e.preventDefault();
+                $('.destroy').on('click',function(){
                     var deleteConfirm = confirm('削除してもいいですか？')
                     if(deleteConfirm == true) {
                         var clickEle = $(this)
-                        var productID = clickEle.data('product_id');
-                        console.log(productID);
+                        var productID = clickEle.data('product-id');
                         $.ajax({
-                            headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            },
-                            url: 'destroy/'+ productID,
+                            url: '/destroy/'+ productID,
                             type: 'POST',
                             dataType: 'json',
-                            data: {'id': productID,'_method':'DELETE'}
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
                         })
                         .done(function(){
-                            console.log('成功');
                             clickEle.parents('tr').remove();
                         })
+                        .fail(function() {
+                            alert('エラー');
+                        });
                     } else {
                         (function(e){
                             e.preventDefault()
@@ -45,6 +38,51 @@
                     };
                 });
             });
+            /* 検索 */
+            $(function() {
+                $('#searchButton').on('click', function() {
+                var product_name = $('#product_name').val();
+                var companyId = $('#company_id').val();
+                var priceUpper = $('#price_upper').val();
+                var priceLower = $('#price_lower').val();
+                var stockUpper = $('#stock_upper').val();
+                var stockLower = $('#stock_lower').val();
+
+                if (product_name !== "" || companyId !== "" || priceUpper !== "" || priceLower !== "" || stockUpper !== "" || stockLower !== "") {
+                    $.ajax({
+                        url: '/api/search',
+                        type: 'GET',
+                        data: {
+                            product_name: product_name,
+                            company_id: companyId,
+                            price_upper: priceUpper,
+                            price_lower: priceLower,
+                            stock_upper: stockUpper,
+                            stock_lower: stockLower,
+                        },
+                        dataType: 'json',
+                    }).done(function(data) {
+                        $('#fav-table').empty();
+                        $('#fav-table').html(data.parts);
+                        table();
+                    }).fail(function() {
+                        alert('データ取得できませんでした。');
+                    });
+                } else {
+                    alert('検索ワード選択してください。');
+                }
+            });
+        });
+        function table(){
+                    $("#fav-table,#fav-table2").tablesorter({
+                    headers: {
+                        0: { sorter: false },
+                        1: { sorter: false },
+                        2: { sorter: false },
+                        5: { sorter: false }
+                    }
+                    });
+                }
             </script>
         </head>
         <!-- header -->
@@ -83,7 +121,7 @@
 
         <!-- 検索機能 -->
         <div class="container">
-            <form class="row justify-content-md-center" method="GET" action="{{ route('product.index') }}">
+            <!-- <form class="row justify-content-md-center" method="GET" action="{{ route('product.index') }}">
             @csrf
                 <input type="text" name="product_name" placeholder="商品名" class="col col-lg-1">
                 <select class="col col-lg-1 ms-3" name="company_id">
@@ -96,6 +134,19 @@
                 <input class="col col-lg-1 ms-3"  type="text" name="stock-upper" placeholder="在庫上限">
                 <input class="col col-lg-1 ms-3"  type="text" name="stock-lower" placeholder="在庫下限">
                 <input class="col col-lg-1 ms-3"  type="submit" value="検索">
+            </form> -->
+            <form class="row justify-content-md-center">
+                <input class="col col-lg-1" type="text" id="product_name" name="product_name" placeholder="商品名">
+                <select class="col col-lg-1 ms-3" id="company_id" name="company_id">
+                            @foreach($companies as $company)
+                            <option  value="{{$company->id}}">{{$company->company_name}}</option>
+                            @endforeach
+                </select>
+                <input class="col col-lg-1 ms-3" id="price_upper"  type="text" name="price_upper" placeholder="価格上限" >
+                <input class="col col-lg-1 ms-3" id="price_lower"  type="text" name="price_lower" placeholder="価格下限" >
+                <input class="col col-lg-1 ms-3" id="stock_upper"  type="text" name="stock_upper" placeholder="在庫上限">
+                <input class="col col-lg-1 ms-3" id="stock_lower"  type="text" name="stock_lower" placeholder="在庫下限">
+                <button class="col col-lg-1 ms-3" id="searchButton">検索</button>
             </form>
         </div>
 
@@ -118,8 +169,8 @@
                         <!-- <th><a class="col col-lg-2 btn btn-primary" href="{{route('product.new')}}">新規追加</a></th> -->
                     </tr>
                 </thead>
-    @foreach( $products as $product)
-                <!-- <tbody class="row justify-content-md-center border-bottom border-dark"> -->
+                <tbody id='products'>
+                @foreach( $products as $product)
                     <tr>
                         <td>{{$product->id}}</td>
                         <td><img style=" max-height:100px;" src="{{ route('product.getfile',['id'=>$product->id]) }}"></td>
@@ -130,20 +181,12 @@
 
                         <td class="ps-5">
                             <a class="btn btn-warning mt-3 ps-4 pe-4" href="{{route('product.show',['id'=>$product->id])}}">詳細</a>
-
-                            <!-- <form action="{{route('product.delete')}}" method="post">
-                                <input type="hidden" name="_token" value="{{csrf_token()}}">
-                                <input type="hidden" name="id" value="{{$product->id}}">
-                                <input class="btn btn-danger mt-3 ps-4 pe-4" type="submit" value="削除">
-                            </form> -->
-                            <form  class="id">
-                                <input data-product_id="{{$product->id}}" id="destroy" type="submit" value="削除">
-                            </form>
+                            <button data-product-id="{{$product->id}}" class="destroy btn btn-danger mt-3 ps-4 pe-4 ms-3" type="button">削除</button>
                         </td>
                     </tr>
-                <!-- </tbody> -->
-    @endforeach
-        </table>
+                @endforeach
+                </tbody>
+            </table>
         </div>
         <!-- ページネーション -->
         {{ $products->links('vendor.pagination.bootstrap-4') }}
