@@ -40,7 +40,8 @@
             });
             /* 検索 */
             $(function() {
-                $('#searchButton').on('click', function() {
+                $('#searchButton').on('click', function(e) {
+                e.preventDefault();
                 var product_name = $('#product_name').val();
                 var companyId = $('#company_id').val();
                 var priceUpper = $('#price_upper').val();
@@ -121,7 +122,7 @@
 
         <!-- 検索機能 -->
         <div class="container">
-            <form class="row justify-content-md-center">
+            <form id="searchForm" class="row justify-content-md-center">
                 <input class="col col-lg-1" type="text" id="product_name" name="product_name" placeholder="商品名">
                 <select class="col col-lg-1 ms-3" id="company_id" name="company_id">
                             @foreach($companies as $company)

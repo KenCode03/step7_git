@@ -1,4 +1,3 @@
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
             <table id="fav-table" class="table table-bordered border">
                 <thead>
                     <tr>
@@ -22,10 +21,9 @@
 
                         <td class="ps-5">
                             <a class="btn btn-warning mt-3 ps-4 pe-4" href="{{route('product.show',['id'=>$product->id])}}">詳細</a>
-                            <button data-product-id="{{$product->id}}" class="destroy" type="button">削除</button>
+                            <button data-product-id="{{$product->id}}" class="destroy btn btn-danger mt-3 ps-4 pe-4 ms-3" type="button">削除</button>
                         </td>
                     </tr>
                 @endforeach
                 </tbody>
             </table>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>

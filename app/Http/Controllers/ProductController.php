@@ -18,40 +18,7 @@ class ProductController extends Controller
     //一覧ページ
     public function index(Request $request){
         $companies = Company::all();
-
-        $query = Product::query();
-        $product_name = $request->input('product_name');
-        $company_id = $request->input ('company_id');
-        $price_upper = $request->input('price-upper');
-        $price_lower = $request->input('price-lower');
-        $stock_upper = $request->input('stock-upper');
-        $stock_lower = $request->input('stock-lower');
-
-        if(!empty($product_name)){
-            $query->where('product_name', 'like', "%$product_name%");
-        }
-
-        if(!empty($company_id)){
-            $query->where('company_id', 'like', "%$company_id%");
-        }
-
-        if(!empty($price_upper)){
-            $query->where('price', '<=', "$price_upper");
-        }
-
-        if(!empty($price_lower)){
-            $query->where('price', '>=', "$price_lower");
-        }
-
-        if(!empty($stock_upper)){
-            $query->where('stock', '<=', "$stock_upper");
-        }
-
-        if(!empty($stock_lower)){
-            $query->where('stock', '>=', "$stock_lower");
-        }
-
-        $products = $query->paginate(4);
+        $products = Product::paginate(4);
 
 
         return view('product.index',[

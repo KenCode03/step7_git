@@ -15,27 +15,27 @@ class SalesController extends Controller
 
         DB::beginTransaction();
         try{
-        $productId = $request->input('product_id');
-        $quantity = $request->input('quantity', 1);
+            $productId = $request->input('product_id');
+            $quantity = $request->input('quantity', 1);
 
-        $product = Product::find($productId);
+            $product = Product::find($productId);
 
-        if (!$product) {
-            return response()->json(['message' => '商品が存在しません']);
-        }
-        if ($product->stock < $quantity) {
-            return response()->json(['message' => '商品が在庫不足です']);
-        }
+            if (!$product) {
+                return response()->json(['message' => '商品が存在しません']);
+            }
+            if ($product->stock < $quantity) {
+                return response()->json(['message' => '商品が在庫不足です']);
+            }
 
-        $product->stock -= $quantity;
-        $product->save();
+            $product->stock -= $quantity;
+            $product->save();
 
-        $sale = new Sale([
-            'product_id' => $productId,
-        ]);
+            $sale = new Sale([
+                'product_id' => $productId,
+            ]);
 
-        $sale->save();
-        DB::commit();
+            $sale->save();
+            DB::commit();
         } catch(\Exception $e){
             DB::rollback();
             return redirect()->back()->with('error','商品の作成中にエラーが発生しました。');
