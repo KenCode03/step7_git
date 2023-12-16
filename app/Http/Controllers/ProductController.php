@@ -51,7 +51,11 @@ class ProductController extends Controller
         $uploadedfile = $request->file('file');
 
         // ファイルをアップロード
-        $filename = $uploadedfile->getClientOriginalName();
+        if($uploadedfile){
+            $filename = $uploadedfile->getClientOriginalName();
+        } else {
+            $filename = "";
+        }
 
         // データのバリデーション
         $validatedData = $request->validated();

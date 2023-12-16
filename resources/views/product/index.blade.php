@@ -74,6 +74,7 @@
                 }
             });
         });
+        /* ソート機能 */
         function table(){
                     $("#fav-table,#fav-table2").tablesorter({
                     headers: {

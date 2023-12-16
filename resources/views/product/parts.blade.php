@@ -1,3 +1,44 @@
+        <script>
+            /* 削除 */
+            $(function() {
+                $('.destroy').on('click',function(){
+                    var deleteConfirm = confirm('削除してもいいですか？')
+                    if(deleteConfirm == true) {
+                        var clickEle = $(this)
+                        var productID = clickEle.data('product-id');
+                        $.ajax({
+                            url: '/destroy/'+ productID,
+                            type: 'POST',
+                            dataType: 'json',
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        })
+                        .done(function(){
+                            clickEle.parents('tr').remove();
+                        })
+                        .fail(function() {
+                            alert('エラー');
+                        });
+                    } else {
+                        (function(e){
+                            e.preventDefault()
+                        });
+                    };
+                });
+            });
+            /* ソート機能 */
+            function table(){
+                $("#fav-table,#fav-table2").tablesorter({
+                    headers: {
+                        0: { sorter: false },
+                        1: { sorter: false },
+                        2: { sorter: false },
+                        5: { sorter: false }
+                    }
+                });
+            }
+        </script>
             <table id="fav-table" class="table table-bordered border">
                 <thead>
                     <tr>
